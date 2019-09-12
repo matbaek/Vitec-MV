@@ -13,9 +13,10 @@ Du er her: <b><a asp-page="../Index">Forside</a></b> > <b><a asp-page="./Index">
 <img src="https://www.mv-nordic.com/wp-content/uploads/2017/11/CDORD_gradient.png" width="200px" height="200px" />
 <hr />
 
-<div>
-    @Html.DisplayFor(model => model.Product.Description)
-</div>
-<div>
-    @Html.DisplayNameFor(model => model.Product.Price): @Html.DisplayFor(model => model.Product.Price)
+<div style="background-color: #F0F0F0;">
+    <div style="padding: 35px;">
+        @Html.Raw(Model.Product.Description.Replace(Environment.NewLine, "<br/>"))
+        <br /><br />
+        @Html.DisplayNameFor(model => model.Product.Price): @Html.DisplayFor(model => model.Product.Price)
+    </div>
 </div>
