@@ -5,18 +5,25 @@
     ViewData["Title"] = Html.DisplayFor(model => model.Product.Titel);
 }
 
-Du er her: <b><a asp-page="../Index">Forside</a></b> > <b><a asp-page="./Index">Produkter</a></b> > <b>@Html.DisplayFor(model => model.Product.Titel)</b>
-<hr />
-<h1>@Html.DisplayFor(model => model.Product.Titel)</h1>
+<div style="background-color: rgb(77, 78, 76); padding-top: 10px; padding-bottom: 10px; color: rgb(255, 255, 255);">
+    <div class="container">
+        Du er her: <b><a asp-page="../Index">Forside</a></b> > <b><a asp-page="./Index">Produkter</a></b> > <b>@Html.DisplayFor(model => model.Product.Titel)</b>
+    </div>
+</div>
+<br />
+
+<div class="container">
+    <h1>@Html.DisplayFor(model => model.Product.Titel)</h1>
 
 
-<img src="https://www.mv-nordic.com/wp-content/uploads/2017/11/CDORD_gradient.png" width="200px" height="200px" />
-<hr />
+    <img src="https://www.mv-nordic.com/wp-content/uploads/2017/11/CDORD_gradient.png" width="200px" height="200px" />
+    <hr />
 
-<div style="background-color: #F0F0F0;">
-    <div style="padding: 35px;">
-        @Html.Raw(Model.Product.Description.Replace(Environment.NewLine, "<br/>"))
-        <br /><br />
-        @Html.DisplayNameFor(model => model.Product.Price): @Html.DisplayFor(model => model.Product.Price)
+    <div style="background-color: #F0F0F0;">
+        <div style="padding: 35px;">
+            @Html.Raw(Model.Product.Description.Replace(Environment.NewLine, "<br/>"))
+            <br /><br />
+            @Html.DisplayNameFor(model => model.Product.Price): @Html.DisplayFor(model => model.Product.Price)
+        </div>
     </div>
 </div>
