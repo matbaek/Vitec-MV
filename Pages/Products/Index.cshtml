@@ -5,50 +5,71 @@
     ViewData["Title"] = "Produkter";
 }
 
-<div style="background-color: rgb(77, 78, 76); padding-top: 10px; padding-bottom: 10px; color: rgb(255, 255, 255);">
+<style>
+    .navBar {
+        background-color: rgb(77, 78, 76); 
+        padding-top: 10px; 
+        padding-bottom: 10px; 
+        color: rgb(255, 255, 255);
+    }
+    .product {
+        background-color: #F3F3F3;
+        width: 100%;
+        height: 140px;
+        padding: 10px;
+    }
+    .product p {
+        height: 100%;
+        margin-top: 50%;
+    }
+    .product:hover {
+        background-color: #c9c9c9;
+    }
+    a {
+        color: #000000;
+        text-decoration: none;
+    }
+    a:hover {
+        color: black;
+        text-decoration: none;
+    }
+    </style>
+
+<div class="navBar">
     <div class="container">
         Du er her: <b><a asp-page="../Index">Forside</a></b> > <b>Produkter</b>
     </div>
 </div>
 <br />
 <div class="container">
-    <h1>Produkter</h1>
-    <hr />
-    @{ int count = 0;}
-    @foreach (var item in Model.Product)
-    {
-        string description = item.Description;
-        if (description.Length > 30) { description = item.Description.Substring(0, 110) + "..."; }
-        <div style="position: relative; width: 22%; height: 450px; float: left;">
-            <div style="width: 100%; height: 390px; border:1px solid black; ">
-                <img src="https://www.mv-nordic.com/wp-content/uploads/2017/11/CDORD_gradient.png" width="100%" height="200px" />
-                <div style="padding-top: 5px; padding-left: 5px; padding-right: 5px;">
-                    <div style="">
-                        <b style="font-size: 150%;">
-                            @Html.DisplayFor(modelItem => item.Titel)
-                        </b>
+    
+@{ int count = 0; }
+@foreach (var item in Model.Product)
+{
+    string description = item.Description;
+    string style = "background-color: #F3F3F3;";
+    if (description.Length > 110) { description = item.Description.Substring(0, 110) + "..."; }
+    if(count == 0) { style = "background-color: #F3F3F3;"; count++; }
+    else { style = "background-color: #BEDCE6;"; count = 0; }
+    <a asp-page="./Details" asp-route-id="@item.ID">
+        <div class="row product" style="@style">
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="https://www.mv-nordic.com/wp-content/uploads/2017/11/CDORD_gradient.png" />
                     </div>
-                    <div>
-                        @Html.DisplayFor(modelItem => description)
-                    </div>
-                    <div style="position: absolute; bottom: 65px;">
-                        <a asp-page="./Details" asp-route-id="@item.ID">Se mere </a>
-                        <br />
-                        Pris: @Html.DisplayFor(modelItem => item.Price) | <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a>
+                    <div class="col-md-8">
+                        <h3>@item.Titel</h3>
                     </div>
                 </div>
             </div>
-            <div style="position: relative; width: 100%; height: 60px; float: left;"></div>
+            <div class="col-md-5">
+                @description
+            </div>
+            <div class="col-md-2">
+                <div style="width: 80px; height: 30px; border: 2px solid black; padding-left: 8px; background: linear-gradient(rgb(255, 255, 255, 0.5), rgb(255, 255, 255, 0.5))">Se mere</div>
+            </div>
         </div>
-        if (count != 3)
-        {
-            <div style="position: relative; width: 4%; height: 450px; float: left;"></div>
-            count++;
-        }
-        else
-        {
-            count = 1;
-        }
-    }
-    <div style="position: relative; width: 100%; height: 50px; float: left;"></div>
+    </a>
+}
 </div>

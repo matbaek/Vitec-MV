@@ -11,14 +11,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Vitec_MV.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Vitec_MV
 {
 	public class Startup
 	{
-		public Startup(IConfiguration configuration)
+        private readonly ILogger _logger;
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
 		{
 			Configuration = configuration;
+            _logger = logger;
 		}
 
 		public IConfiguration Configuration { get; }
@@ -33,24 +36,28 @@ namespace Vitec_MV
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
 
-
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 		    services.AddDbContext<Vitec_MVContext>(options =>
 		            options.UseSqlServer(Configuration.GetConnectionString("Vitec_MVContext")));
-		}
+        }
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 		{
 			if (env.IsDevelopment())
 			{
-				app.UseDeveloperExceptionPage();
+                _logger.LogInformation("In Development environment");
+                app.UseDeveloperExceptionPage();
 			}
-			else
-			{
+			else if (env.IsProduction())
+            {
+                _logger.LogInformation("In Production environment");
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
 				app.UseExceptionHandler("/Error");
-				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
 
