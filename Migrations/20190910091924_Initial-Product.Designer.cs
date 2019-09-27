@@ -8,7 +8,7 @@ using Vitec_MV.Models;
 
 namespace Vitec_MV.Migrations
 {
-    [DbContext(typeof(Vitec_MVContext))]
+    [DbContext(typeof(ProductContext))]
     [Migration("20190910091924_Initial-Product")]
     partial class InitialProduct
     {

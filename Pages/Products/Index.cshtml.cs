@@ -11,9 +11,9 @@ namespace Vitec_MV.Pages.Products
 {
     public class IndexModel : PageModel
     {
-        private readonly Vitec_MV.Models.Vitec_MVContext _context;
+        private readonly Vitec_MV.Models.ProductContext _context;
 
-        public IndexModel(Vitec_MV.Models.Vitec_MVContext context)
+        public IndexModel(Vitec_MV.Models.ProductContext context)
         {
             _context = context;
         }

@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Vitec_MV.Models
 {
-    public class Vitec_MVContext : DbContext
+    public class ProductContext : DbContext
     {
-        public Vitec_MVContext (DbContextOptions<Vitec_MVContext> options)
+        public ProductContext (DbContextOptions<ProductContext> options)
             : base(options)
         {
         }

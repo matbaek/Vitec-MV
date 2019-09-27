@@ -12,9 +12,9 @@ namespace Vitec_MV.Pages.Products
 {
     public class EditModel : PageModel
     {
-        private readonly Vitec_MV.Models.Vitec_MVContext _context;
+        private readonly Vitec_MV.Models.ProductContext _context;
 
-        public EditModel(Vitec_MV.Models.Vitec_MVContext context)
+        public EditModel(Vitec_MV.Models.ProductContext context)
         {
             _context = context;
         }
@@ -38,37 +38,100 @@ namespace Vitec_MV.Pages.Products
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int id)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Product).State = EntityState.Modified;
+            var productToUpdate = await _context.Product
+                .Include(p => p.ID)
+                .FirstOrDefaultAsync(m => m.ID == id);
 
-            try
+            if (productToUpdate == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(Product.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return HandleDeletedProduct();
             }
 
-            return RedirectToPage("./Index");
+            _context.Entry(productToUpdate).Property("RowVersion").OriginalValue = Product.RowVersion;
+
+            if (await TryUpdateModelAsync<Product>(
+               productToUpdate,
+               "Produkter",
+               s => s.Titel, s => s.Description, s => s.Price, s => s.ImageURL))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToPage("./Index");
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    var exceptionEntry = ex.Entries.Single();
+                    var clientValues = (Product)exceptionEntry.Entity;
+                    var databaseEntry = exceptionEntry.GetDatabaseValues();
+                    if (databaseEntry == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Unable to save. " +
+                            "The product was deleted by another user.");
+                        return Page();
+                    }
+
+                    var dbValues = (Product)databaseEntry.ToObject();
+                    SetDbErrorMessage(dbValues, clientValues, _context);
+
+                    Product.RowVersion = (byte[])dbValues.RowVersion;
+                    ModelState.Remove("Product.RowVersion");
+                }
+            }
+            return Page();
         }
 
-        private bool ProductExists(int id)
+        private IActionResult HandleDeletedProduct()
         {
-            return _context.Product.Any(e => e.ID == id);
+            var deletedProduct = new Product();
+            ModelState.AddModelError(string.Empty,
+                "Unable to save. The product was deleted by another user.");
+            return Page();
         }
+
+        private void SetDbErrorMessage(Product dbValues,
+                Product clientValues, ProductContext context)
+        {
+
+            if (dbValues.Titel != clientValues.Titel)
+            {
+                ModelState.AddModelError("Product.Titel",
+                    $"Current value: {dbValues.Titel}");
+            }
+            if (dbValues.Description != clientValues.Description)
+            {
+                ModelState.AddModelError("Product.Description",
+                    $"Current value: {dbValues.Description:c}");
+            }
+            if (dbValues.Price != clientValues.Price)
+            {
+                ModelState.AddModelError("Product.Price",
+                    $"Current value: {dbValues.Price:d}");
+            }
+            if (dbValues.ImageURL != clientValues.ImageURL)
+            {
+                ModelState.AddModelError("Product.ImageURL",
+                    $"Current value: {dbValues.ImageURL:e}");
+            }
+
+            ModelState.AddModelError(string.Empty,
+                "The record you attempted to edit "
+              + "was modified by another user after you. The "
+              + "edit operation was canceled and the current values in the database "
+              + "have been displayed. If you still want to edit this record, click "
+              + "the Save button again.");
+        }
+
+        //private bool ProductExists(int id)
+        //{
+        //    return _context.Product.Any(e => e.ID == id);
+        //}
     }
 }

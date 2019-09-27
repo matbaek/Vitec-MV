@@ -38,8 +38,11 @@ namespace Vitec_MV
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-		    services.AddDbContext<Vitec_MVContext>(options =>
+		    services.AddDbContext<ProductContext>(options =>
 		            options.UseSqlServer(Configuration.GetConnectionString("Vitec_MVContext")));
+
+		    services.AddDbContext<ProductContext>(options =>
+		            options.UseSqlServer(Configuration.GetConnectionString("ProductContext")));
         }
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
